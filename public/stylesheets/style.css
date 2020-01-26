@@ -1,0 +1,165 @@
+body {
+  padding: 10px;
+  font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
+  background-image: url(/images/1280-jp-record-shelf-1.jpg);
+}
+
+p {
+	color: white;
+	text-shadow:
+	-1px -1px 0 #000,
+    1px -1px 0 #000,
+    -1px 1px 0 #000,
+    1px 1px 0 #000;  
+}
+
+span.label {
+	color: white;
+	display: inline-block;
+	text-align:center;
+	width: 150px;
+	text-shadow:
+	-1px -1px 0 #000,
+    1px -1px 0 #000,
+    -1px 1px 0 #000,
+    1px 1px 0 #000;  
+}
+
+h1 {
+	color: white;
+    text-shadow:
+    -1px -1px 0 #000,
+    1px -1px 0 #000,
+    -1px 1px 0 #000,
+    1px 1px 0 #000;  
+}
+
+h2 {
+	margin:0 0 .5em 0;
+}
+
+a {
+  color: #00B7FF;
+}
+
+input {
+	width: 147px;
+}
+
+select {
+	width: 151px;
+}
+
+
+#leftpart {
+    width:25%;
+    float:left;
+}
+
+#rightpart {
+    width:75%;
+    float:left;
+}
+
+#btnRecordsSearch {
+	width: 150px;	
+}
+
+#inputCoverFile {
+	width: 151px;	
+}
+
+#btnUploadCover {
+	width: 152px;	
+}
+
+#btnRecordsSave {
+	width: 151px;	
+}
+
+#btnRecordsResetInputFields {
+	width: 152px;	
+}
+
+
+#wrapper {
+	padding-left:200px;
+	position:relative;
+}
+
+#userList {
+	margin:0 0 30px 0;
+}
+	#userList table {
+		border-collapse:separate;
+		border-spacing:1px;
+		background:#CCC;
+	}
+		#userList table th {
+			background:#EEE;
+			font-weight:600;
+			padding:10px 20px;
+			text-align:center;
+		}
+		#userList table tbody {
+			padding:0; margin:0;
+			border-collapse:collapse;
+			border-spacing:0px;
+		}
+			#userList table td {
+				background:#FFF;
+				padding:5px 10px;
+				text-align:center;
+			}
+
+#userInfo {
+	width:250px;
+	position:absolute;
+	top:0; left:0;
+}
+	#userInfo p {
+		padding:15px;
+		border:1px solid #CCC;
+		background:rgba(80,120,255,0.05);
+	}
+
+fieldset {
+	border:0;
+	padding:0; margin:0;
+}
+
+#recordsWrapper {
+	padding-left:10px;
+	position:relative;
+}
+
+#recordsList {
+	margin:0 0 5px 0;
+}
+#recordsList table {
+border-collapse:separate;
+border-spacing:1px;
+background:#CCC;
+}
+#recordsList table th {
+background:#EEE;
+font-weight:600;
+padding:10px 20px;
+text-align:center;
+}
+#recordsList table tbody {
+padding:0; margin:0;
+border-collapse:collapse;
+border-spacing:0px;
+}
+#recordsList table td {
+background:#FFF;
+padding:5px 10px;
+text-align:center;
+}
+#recordsList table i {
+background:#FFF;
+padding:5px 10px;
+text-align:center;
+cursor: pointer;
+}
