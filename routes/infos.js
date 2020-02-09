@@ -1,11 +1,20 @@
 var express = require('express');
 var router = express.Router();
 
-/* GET home page. */
-router.get('/', function(req, res, next) {
-  var db = req.dbRecords;
-  var collection = db.get('soulfunk');
-  res.render('infos', { title: 'System infos', dbVersion: 'MongoDB Version = 4.0'});
+// Load MongoDB utils
+const MongoDBAccess = require('../db/dbaccess');
+
+/* GET infos page. */
+router.get('/', function (req, res, next) {
+  const db = MongoDBAccess.getDB();
+
+  var collection = db.collection('soulfunk');
+  collection.count({}, function (error, numOfDocs) {
+    if (error) throw error;
+
+    res.render('infos', { title: 'System infos', dbVersion: 'MongoDB Version = 4.2', count: numOfDocs });
+  });
+
 });
 
 module.exports = router;
