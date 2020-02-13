@@ -1,4 +1,5 @@
 var express = require('express');
+var mongodb = require('mongodb');
 var router = express.Router();
 
 // Load MongoDB utils
@@ -189,41 +190,45 @@ function detectNumeric(obj) {
  * DELETE to deleterecord.
  */
 router.delete('/deleterecord/', function (req, res) {
-    // @ts-ignore
-    var db = req.dbRecords;
+
+    console.log(req.query);
+
+    // Set our internal DB variable
+    const db = MongoDBAccess.getDB();
+
     // Set our collection
     var collection;
 
     if (req.query.Style === '2') {
-        collection = db.get('rap');
+        collection = db.collection('rap');
     }
     else if (req.query.Style === '3') {
-        collection = db.get('jazz');
+        collection = db.collection('jazz');
     }
     else if (req.query.Style === '4') {
-        collection = db.get('soundtracks');
+        collection = db.collection('soundtracks');
     }
     else if (req.query.Style === '5') {
-        collection = db.get('misc');
+        collection = db.collection('misc');
     }
     else if (req.query.Style === '6') {
-        collection = db.get('aor');
+        collection = db.collection('aor');
     }
     else if (req.query.Style === '7') {
-        collection = db.get('audiophile');
+        collection = db.collection('audiophile');
     }
     else {
-        collection = db.get('soulfunk');
+        collection = db.collection('soulfunk');
     }
-
+    
     var recordToDelete = req.query.ID;
 
     console.log('req.query.ID = ' + recordToDelete);
 
-    collection.findOne({ '_id': recordToDelete }, function (err, doc) {
+/*    collection.findOne({ '_id': recordToDelete }, function (err, doc) {
         if (!err) {
             if (doc.ImageFileName !== '') {
-/*                var filePath = 'public/uploads/'+doc.ImageFileName;
+                var filePath = 'public/uploads/'+doc.ImageFileName;
                 console.log('filePath = ' + filePath);
                 fs.access(filePath, error => {
                     if (!error) {
@@ -232,11 +237,11 @@ router.delete('/deleterecord/', function (req, res) {
                         console.log(error);
                     }
                 });
-*/            }
+            }
         }
-    });
+    });*/
 
-    collection.remove({ '_id': recordToDelete }, function (err) {
+    collection.deleteOne({ '_id': new mongodb.ObjectID(recordToDelete) }, function(err, results) {
         res.send((err === null) ? { msg: '' } : { msg: 'error: ' + err });
     });
 });
