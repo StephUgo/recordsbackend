@@ -252,29 +252,34 @@ router.post('/updaterecord', function (req, res) {
     console.log('/updaterecord');
     console.log(req.body);
 
-    // @ts-ignore
-    var db = req.dbRecords;
-    var collection = db.get('soulfunk');
+    // Set our internal DB variable
+    const db = MongoDBAccess.getDB();
     var body = req.body;
     var id = body.ID;
 
+    // Set our collection
+    var collection;
+
     if (body.Style === '2') {
-        collection = db.get('rap');
+        collection = db.collection('rap');
     }
     else if (body.Style === '3') {
-        collection = db.get('jazz');
+        collection = db.collection('jazz');
     }
     else if (body.Style === '4') {
-        collection = db.get('soundtracks');
+        collection = db.collection('soundtracks');
     }
     else if (body.Style === '5') {
-        collection = db.get('misc');
+        collection = db.collection('misc');
     }
     else if (body.Style === '6') {
-        collection = db.get('aor');
+        collection = db.collection('aor');
     }
     else if (body.Style === '7') {
-        collection = db.get('audiophile');
+        collection = db.collection('audiophile');
+    }
+    else {
+        collection = db.collection('soulfunk');
     }
 
     if (!isNaN(body.Year)) {
@@ -294,8 +299,8 @@ router.post('/updaterecord', function (req, res) {
         'Reference': body.Reference
     }
 
-    collection.update(
-        { _id: id },
+    collection.updateOne(
+        { _id: new mongodb.ObjectID(id) },
         { $set: newFields },
         function (err, result) {
             res.send(
