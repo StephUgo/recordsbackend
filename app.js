@@ -30,10 +30,6 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 
 // Database
-// Modified to Work dockerized MongoDb : use localhost instead of database if you're not using the dockerized MongoDb AND calling from
-// a dockerized node app
-//var dbRecords = monk('database:27017/recordcollectiondb',null,null);
-//var dbRecords = monk('localhost:27017/recordcollectiondb',null,null);
 
 // Load MongoDB utils
 const MongoDB = require('./db/dbaccess');
