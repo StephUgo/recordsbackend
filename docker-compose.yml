@@ -1,0 +1,17 @@
+version: '3.4'
+services:
+  recordsbackend: # name of the node backend
+    image: recordsbackend:0.3
+    ports:
+      - "3000:3000" #specify ports mapping
+    links:
+      - database # link this service to the database service
+  
+  database:
+    image: mongo:4.2
+    ports:
+      - "27017:27017"
+    volumes:
+       - mongodata4:/data/db
+volumes:
+  mongodata4:
