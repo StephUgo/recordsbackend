@@ -7,6 +7,41 @@ const MongoDBAccess = require('../db/dbaccess');
 
 const fs = require('fs');
 
+function getCollection(styleId) {
+    // Set our internal DB variable
+    const db = MongoDBAccess.getDB();
+
+    // Set our collection
+    var collection;
+
+    switch(styleId) {
+        case '1': 
+            collection = db.collection('soulfunk');
+            break;
+        case '2': 
+            collection = db.collection('rap');
+            break;
+        case '3':
+            collection = db.collection('jazz');
+            break;
+        case '4': 
+            collection = db.collection('soundtracks');
+            break;
+        case '5': 
+            collection = db.collection('misc');
+            break;
+        case '6':
+            collection = db.collection('aor');
+            break;
+        case '7' :
+            collection = db.collection('audiophile');
+            break;
+        default:
+            collection = db.collection('misc');
+    }
+    return collection;
+}
+
 /* GET to Search Records Default Service */
 router.get('/searchrecordsdefault/', function (req, res) {
 
@@ -32,33 +67,7 @@ router.get('/searchrecords/', function (req, res) {
 
     console.log(req.query);
 
-    // Set our internal DB variable
-    const db = MongoDBAccess.getDB();
-
-    // Set our collection
-    var collection;
-
-    if (req.query.Style === '2') {
-        collection = db.collection('rap');
-    }
-    else if (req.query.Style === '3') {
-        collection = db.collection('jazz');
-    }
-    else if (req.query.Style === '4') {
-        collection = db.collection('soundtracks');
-    }
-    else if (req.query.Style === '5') {
-        collection = db.collection('misc');
-    }
-    else if (req.query.Style === '6') {
-        collection = db.collection('aor');
-    }
-    else if (req.query.Style === '7') {
-        collection = db.collection('audiophile');
-    }
-    else {
-        collection = db.collection('soulfunk');
-    }
+    var collection = getCollection(req.query.Style);
 
     var searchRequest = {};
 
@@ -139,31 +148,9 @@ router.post('/saverecord', function (req, res) {
     console.log('/saverecord');
     console.log(req.body);
 
-    // Set our internal DB variable
-    const db = MongoDBAccess.getDB();
-
     // Set our collection
-    var collection = db.collection('soulfunk');
     var body = req.body;
-
-    if (body.Style === '2') {
-        collection = db.collection('rap');
-    }
-    else if (body.Style === '3') {
-        collection = db.collection('jazz');
-    }
-    else if (body.Style === '4') {
-        collection = db.collection('soundtracks');
-    }
-    else if (body.Style === '5') {
-        collection = db.collection('misc');
-    }
-    else if (body.Style === '6') {
-        collection = db.collection('aor');
-    }
-    else if (body.Style === '7') {
-        collection = db.collection('audiophile');
-    }
+    var collection = getCollection(body.Style);
 
     if (!isNaN(body.Year)) {
         body.Year = Number(body.Year);
@@ -193,33 +180,8 @@ router.delete('/deleterecord/', function (req, res) {
 
     console.log(req.query);
 
-    // Set our internal DB variable
-    const db = MongoDBAccess.getDB();
-
     // Set our collection
-    var collection;
-
-    if (req.query.Style === '2') {
-        collection = db.collection('rap');
-    }
-    else if (req.query.Style === '3') {
-        collection = db.collection('jazz');
-    }
-    else if (req.query.Style === '4') {
-        collection = db.collection('soundtracks');
-    }
-    else if (req.query.Style === '5') {
-        collection = db.collection('misc');
-    }
-    else if (req.query.Style === '6') {
-        collection = db.collection('aor');
-    }
-    else if (req.query.Style === '7') {
-        collection = db.collection('audiophile');
-    }
-    else {
-        collection = db.collection('soulfunk');
-    }
+    var collection = getCollection(req.query.Style);
     
     var recordToDelete = req.query.ID;
 
@@ -252,35 +214,11 @@ router.post('/updaterecord', function (req, res) {
     console.log('/updaterecord');
     console.log(req.body);
 
-    // Set our internal DB variable
-    const db = MongoDBAccess.getDB();
     var body = req.body;
     var id = body.ID;
 
     // Set our collection
-    var collection;
-
-    if (body.Style === '2') {
-        collection = db.collection('rap');
-    }
-    else if (body.Style === '3') {
-        collection = db.collection('jazz');
-    }
-    else if (body.Style === '4') {
-        collection = db.collection('soundtracks');
-    }
-    else if (body.Style === '5') {
-        collection = db.collection('misc');
-    }
-    else if (body.Style === '6') {
-        collection = db.collection('aor');
-    }
-    else if (body.Style === '7') {
-        collection = db.collection('audiophile');
-    }
-    else {
-        collection = db.collection('soulfunk');
-    }
+    var collection = getCollection(body.Style);
 
     if (!isNaN(body.Year)) {
         body.Year = Number(body.Year);
