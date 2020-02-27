@@ -14,27 +14,54 @@ function getCollection(styleId) {
     // Set our collection
     var collection;
 
-    switch(styleId) {
-        case '1': 
+    switch (styleId) {
+        case '1':
             collection = db.collection('soulfunk');
             break;
-        case '2': 
+        case '2':
             collection = db.collection('rap');
             break;
         case '3':
             collection = db.collection('jazz');
             break;
-        case '4': 
+        case '4':
             collection = db.collection('soundtracks');
             break;
-        case '5': 
+        case '5':
             collection = db.collection('misc');
             break;
         case '6':
             collection = db.collection('aor');
             break;
-        case '7' :
+        case '7':
             collection = db.collection('audiophile');
+            break;
+        case '8':
+            collection = db.collection('latin');
+            break;
+        case '9':
+            collection = db.collection('african');
+            break;
+        case '10':
+            collection = db.collection('island');
+            break;
+        case '11':
+            collection = db.collection('hawaii');
+            break;
+        case '12':
+            collection = db.collection('classical');
+            break;
+        case '13':
+            collection = db.collection('spiritualjazz');
+            break;
+        case '14':
+            collection = db.collection('rock');
+            break;
+        case '15':
+            collection = db.collection('reggae');
+            break;
+        case '16':
+            collection = db.collection('library');
             break;
         default:
             collection = db.collection('misc');
@@ -126,10 +153,10 @@ router.get('/searchrecords/', function (req, res) {
         collection.find(searchRequest).count(function (e, totalCount) {
             console.log("Search request total results length = " + totalCount);
             collection.find(searchRequest).skip(searchOptions.skip).limit(searchOptions.limit).sort(searchOptions.sort).toArray(function (e, docs) {
-                    var searchResult = {};
-                    searchResult.totalCount = totalCount;
-                    searchResult.records = docs;
-                    res.json(searchResult);
+                var searchResult = {};
+                searchResult.totalCount = totalCount;
+                searchResult.records = docs;
+                res.json(searchResult);
             });
         });
     }
@@ -182,28 +209,28 @@ router.delete('/deleterecord/', function (req, res) {
 
     // Set our collection
     var collection = getCollection(req.query.Style);
-    
+
     var recordToDelete = req.query.ID;
 
     console.log('req.query.ID = ' + recordToDelete);
 
-/*    collection.findOne({ '_id': recordToDelete }, function (err, doc) {
-        if (!err) {
-            if (doc.ImageFileName !== '') {
-                var filePath = 'public/uploads/'+doc.ImageFileName;
-                console.log('filePath = ' + filePath);
-                fs.access(filePath, error => {
-                    if (!error) {
-                        fs.unlinkSync(filePath);
-                    } else {
-                        console.log(error);
-                    }
-                });
+    /*    collection.findOne({ '_id': recordToDelete }, function (err, doc) {
+            if (!err) {
+                if (doc.ImageFileName !== '') {
+                    var filePath = 'public/uploads/'+doc.ImageFileName;
+                    console.log('filePath = ' + filePath);
+                    fs.access(filePath, error => {
+                        if (!error) {
+                            fs.unlinkSync(filePath);
+                        } else {
+                            console.log(error);
+                        }
+                    });
+                }
             }
-        }
-    });*/
+        });*/
 
-    collection.deleteOne({ '_id': new mongodb.ObjectID(recordToDelete) }, function(err, results) {
+    collection.deleteOne({ '_id': new mongodb.ObjectID(recordToDelete) }, function (err, results) {
         res.send((err === null) ? { msg: '' } : { msg: 'error: ' + err });
     });
 });
