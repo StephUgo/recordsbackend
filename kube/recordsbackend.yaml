@@ -1,0 +1,35 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: recordsbackend
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: recordsbackend
+  template:
+    metadata:
+      labels:
+        app: recordsbackend
+    spec:
+      containers:
+        - name: recordsbackendcontainer
+          image: recordsbackend:0.4
+          ports:
+            - containerPort: 3000
+          env:
+            - name: NODE_ENV
+              value: production
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: recordsbackend
+spec:
+  selector:
+    app: recordsbackend
+  ports:
+    - port: 3000
+      targetPort: 3000
+  type: LoadBalancer
