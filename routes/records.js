@@ -63,6 +63,9 @@ function getCollection(styleId) {
         case '16':
             collection = db.collection('library');
             break;
+        case '17':
+            collection = db.collection('european');
+            break;
         default:
             collection = db.collection('misc');
     }
