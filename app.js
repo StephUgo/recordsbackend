@@ -16,10 +16,6 @@ app.use(function (req, res, next) {
   next();
 });
 
-// view engine setup
-app.set('views', path.join(__dirname, 'views'));
-app.set('view engine', 'pug');
-
 // uncomment after placing your favicon in /public
 //app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
 app.use(logger('dev'));
@@ -40,7 +36,6 @@ MongoDB.connectDB(async (err) => {
   if (err) throw err
 
   try {
-    var index = require('./routes/index');
     var records = require('./routes/records');
     var infos = require('./routes/infos');
     var coverupload = require('./routes/coverupload');
@@ -52,7 +47,6 @@ MongoDB.connectDB(async (err) => {
     });
 
 
-    app.use('/', index);
     app.use('/records', records);
     app.use('/records/uploadcover', coverupload);
     app.use('/infos', infos);
