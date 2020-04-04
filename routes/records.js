@@ -7,77 +7,6 @@ const MongoDBAccess = require('../db/dbaccess');
 
 const fs = require('fs');
 
-function getCollection(styleId) {
-    // Set our internal DB variable
-    const db = MongoDBAccess.getDB();
-
-    // Set our collection
-    var collection;
-
-    switch (styleId) {
-        case '1':
-            collection = db.collection('soulfunk');
-            break;
-        case '2':
-            collection = db.collection('rap');
-            break;
-        case '3':
-            collection = db.collection('jazz');
-            break;
-        case '4':
-            collection = db.collection('soundtracks');
-            break;
-        case '5':
-            collection = db.collection('misc');
-            break;
-        case '6':
-            collection = db.collection('aor');
-            break;
-        case '7':
-            collection = db.collection('audiophile');
-            break;
-        case '8':
-            collection = db.collection('latin');
-            break;
-        case '9':
-            collection = db.collection('african');
-            break;
-        case '10':
-            collection = db.collection('island');
-            break;
-        case '11':
-            collection = db.collection('hawaii');
-            break;
-        case '12':
-            collection = db.collection('classical');
-            break;
-        case '13':
-            collection = db.collection('spiritualjazz');
-            break;
-        case '14':
-            collection = db.collection('rock');
-            break;
-        case '15':
-            collection = db.collection('reggae');
-            break;
-        case '16':
-            collection = db.collection('library');
-            break;
-        case '17':
-            collection = db.collection('european');
-            break;
-        case '18':
-            collection = db.collection('brazilian');
-            break;
-        case '19':
-            collection = db.collection('japanese');
-            break;
-        default:
-            collection = db.collection('misc');
-    }
-    return collection;
-}
-
 /* GET to Search Records Default Service */
 router.get('/searchrecordsdefault/', function (req, res) {
 
@@ -130,24 +59,7 @@ router.get('/searchrecords/', function (req, res) {
     }
 
     var searchOptions = {};
-    if (req.query.Sort === '2') {
-        searchOptions.sort = { Artist: -1 };
-    }
-    else if (req.query.Sort === '3') {
-        searchOptions.sort = { Year: 1 };
-    }
-    else if (req.query.Sort === '4') {
-        searchOptions.sort = { Year: -1 };
-    }
-    else if (req.query.Sort === '5') {
-        searchOptions.sort = { Title: 1 };
-    }
-    else if (req.query.Sort === '6') {
-        searchOptions.sort = { Title: -1 };
-    }
-    else {
-        searchOptions.sort = { Artist: 1 };
-    }
+    searchOptions.sort = getSortOptions(req.query.Sort);
 
     if (req.query.Limit != null) {
         searchOptions.limit = Number(req.query.Limit);
@@ -177,7 +89,6 @@ router.get('/searchrecords/', function (req, res) {
     }
 });
 
-
 /* POST to save a new record.*/
 router.post('/saverecord', function (req, res) {
 
@@ -198,16 +109,6 @@ router.post('/saverecord', function (req, res) {
         );
     });
 });
-
-function detectNumeric(obj) {
-    for (var index in obj) {
-        if (!isNaN(obj[index])) {
-            obj[index] = Number(obj[index]);
-        } else if (typeof obj === "object") {
-            detectNumeric(obj[index]);
-        }
-    }
-}
 
 /*
  * DELETE to deleterecord.
@@ -283,5 +184,135 @@ router.post('/updaterecord', function (req, res) {
         }
     );
 });
+
+function getCollection(styleId) {
+    // Set our internal DB variable
+    const db = MongoDBAccess.getDB();
+
+    // Set our collection
+    var collection;
+
+    switch (styleId) {
+        case '1':
+            collection = db.collection('soulfunk');
+            break;
+        case '2':
+            collection = db.collection('rap');
+            break;
+        case '3':
+            collection = db.collection('jazz');
+            break;
+        case '4':
+            collection = db.collection('soundtracks');
+            break;
+        case '5':
+            collection = db.collection('misc');
+            break;
+        case '6':
+            collection = db.collection('aor');
+            break;
+        case '7':
+            collection = db.collection('audiophile');
+            break;
+        case '8':
+            collection = db.collection('latin');
+            break;
+        case '9':
+            collection = db.collection('african');
+            break;
+        case '10':
+            collection = db.collection('island');
+            break;
+        case '11':
+            collection = db.collection('hawaii');
+            break;
+        case '12':
+            collection = db.collection('classical');
+            break;
+        case '13':
+            collection = db.collection('spiritualjazz');
+            break;
+        case '14':
+            collection = db.collection('rock');
+            break;
+        case '15':
+            collection = db.collection('reggae');
+            break;
+        case '16':
+            collection = db.collection('library');
+            break;
+        case '17':
+            collection = db.collection('european');
+            break;
+        case '18':
+            collection = db.collection('brazilian');
+            break;
+        case '19':
+            collection = db.collection('japanese');
+            break;
+        default:
+            collection = db.collection('misc');
+    }
+    return collection;
+}
+
+function getSortOptions(sortId) {
+    var sortOptions;
+    switch (sortId) {
+        case '2':
+            sortOptions = { Artist: -1 };
+            break;
+        case '3':
+            sortOptions = { Year: 1 };
+            break;
+        case '4':
+            sortOptions = { Year: -1 };
+            break;
+        case '5':
+            sortOptions = { Title: 1 };
+            break;
+        case '6':
+            sortOptions = { Title: -1 };
+            break;
+        case '7':
+            sortOptions = { Format: 1 };
+            break;
+        case '8':
+            sortOptions = { Format: -1 };
+            break;
+        case '9':
+            sortOptions = { Label: 1 };
+            break;
+        case '10':
+            sortOptions = { Label: -1 };
+            break;
+        case '11':
+            sortOptions = { Country: 1 };
+            break;
+        case '12':
+            sortOptions = { Country: -1 };
+            break;
+        case '13':
+            sortOptions = { Period: 1 };
+            break;
+        case '14':
+            sortOptions = { Period: -1 };
+            break;
+        default:
+            sortOptions = { Artist: 1 };
+            break;
+    }
+    return sortOptions;
+}
+
+function detectNumeric(obj) {
+    for (var index in obj) {
+        if (!isNaN(obj[index])) {
+            obj[index] = Number(obj[index]);
+        } else if (typeof obj === "object") {
+            detectNumeric(obj[index]);
+        }
+    }
+}
 
 module.exports = router;
