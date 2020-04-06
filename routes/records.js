@@ -10,11 +10,8 @@ const fs = require('fs');
 /* GET to Search Records Default Service */
 router.get('/searchrecordsdefault/', function (req, res) {
 
-    // Set our internal DB variable
-    const db = MongoDBAccess.getDB();
-
     // Set our collection
-    var collection = db.collection('soulfunk');
+    var collection = getCollection();
 
     var searchRequest = {};
     var limit;
@@ -32,9 +29,13 @@ router.get('/searchrecords/', function (req, res) {
 
     console.log(req.query);
 
-    var collection = getCollection(req.query.Style);
+    // Set our collection
+    var collection = getCollection();
 
     var searchRequest = {};
+
+    // Set search criterion
+    setStyleFromId(req.query.Style, searchRequest);
 
     if ((typeof req.query.Artiste != 'undefined') && (req.query.Artiste != '')) {
         searchRequest.Artist = { $regex: new RegExp('.*' + req.query.Artiste + '.*', 'i') };
@@ -95,9 +96,13 @@ router.post('/saverecord', function (req, res) {
     console.log('/saverecord');
     console.log(req.body);
 
-    // Set our collection
     var body = req.body;
-    var collection = getCollection(body.Style);
+
+    // Set our collection
+    var collection = getCollection();
+
+    // Update style from Id to String
+    setStyleFromId(body.Style, body);
 
     if (!isNaN(body.Year)) {
         body.Year = Number(body.Year);
@@ -118,7 +123,7 @@ router.delete('/deleterecord/', function (req, res) {
     console.log(req.query);
 
     // Set our collection
-    var collection = getCollection(req.query.Style);
+    var collection = getCollection();
 
     var recordToDelete = req.query.ID;
 
@@ -155,7 +160,7 @@ router.post('/updaterecord', function (req, res) {
     var id = body.ID;
 
     // Set our collection
-    var collection = getCollection(body.Style);
+    var collection = getCollection();
 
     if (!isNaN(body.Year)) {
         body.Year = Number(body.Year);
@@ -188,73 +193,72 @@ router.post('/updaterecord', function (req, res) {
 function getCollection(styleId) {
     // Set our internal DB variable
     const db = MongoDBAccess.getDB();
+    return db.collection('records');
+}
 
-    // Set our collection
-    var collection;
+function setStyleFromId(styleId, parentObject) {
 
     switch (styleId) {
         case '1':
-            collection = db.collection('soulfunk');
+            parentObject.Style = "Soul/Funk";
             break;
         case '2':
-            collection = db.collection('rap');
+            parentObject.Style = "Rap";
             break;
         case '3':
-            collection = db.collection('jazz');
+            parentObject.Style = "Jazz";
             break;
         case '4':
-            collection = db.collection('soundtracks');
+            parentObject.Style = "Soundtracks";
             break;
         case '5':
-            collection = db.collection('misc');
+            parentObject.Style = "Misc";
             break;
         case '6':
-            collection = db.collection('aor');
+            parentObject.Style = "AOR";
             break;
         case '7':
-            collection = db.collection('audiophile');
+            //searchRequest.Style = "audiophile'); TODO
             break;
         case '8':
-            collection = db.collection('latin');
+            parentObject.Style = "Latin";
             break;
         case '9':
-            collection = db.collection('african');
+            parentObject.Style = "African";
             break;
         case '10':
-            collection = db.collection('island');
+            parentObject.Style = "Island";
             break;
         case '11':
-            collection = db.collection('hawaii');
+            parentObject.Style = "Hawaii";
             break;
         case '12':
-            collection = db.collection('classical');
+            parentObject.Style = "Classical";
             break;
         case '13':
-            collection = db.collection('spiritualjazz');
+            parentObject.Style = "Spiritual Jazz";
             break;
         case '14':
-            collection = db.collection('rock');
+            parentObject.Style = "Rock";
             break;
         case '15':
-            collection = db.collection('reggae');
+            parentObject.Style = "Reggae";
             break;
         case '16':
-            collection = db.collection('library');
+            parentObject.Style = "Library";
             break;
         case '17':
-            collection = db.collection('european');
+            parentObject.Style = "European";
             break;
         case '18':
-            collection = db.collection('brazilian');
+            parentObject.Style = "Brazilian";
             break;
         case '19':
-            collection = db.collection('japanese');
+            parentObject.Style = "Japanese";
             break;
-        default:
-            collection = db.collection('misc');
     }
-    return collection;
 }
+
 
 function getSortOptions(sortId) {
     var sortOptions;
