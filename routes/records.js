@@ -218,7 +218,7 @@ function setStyleFromId(styleId, parentObject) {
             parentObject.Style = "AOR";
             break;
         case '7':
-            //searchRequest.Style = "audiophile'); TODO
+            parentObject.keywords = "Audiophile";
             break;
         case '8':
             parentObject.Style = "Latin";
