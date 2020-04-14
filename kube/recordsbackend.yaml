@@ -1,3 +1,14 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: covers-pvc
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 512Mi
+---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -20,7 +31,13 @@ spec:
           env:
             - name: NODE_ENV
               value: production
-
+          volumeMounts:
+            - name: coversvolume
+              mountPath: /usr/src/recordsbackend/public
+      volumes:
+        - name: coversvolume
+          persistentVolumeClaim:
+            claimName: covers-pvc
 ---
 apiVersion: v1
 kind: Service
