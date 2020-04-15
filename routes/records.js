@@ -256,6 +256,12 @@ function setStyleFromId(styleId, parentObject) {
         case '19':
             parentObject.Style = "Japanese";
             break;
+        case '20':
+            parentObject.Style = "Electro";
+            break;
+        case '21':
+            parentObject.Style = "Brit Funk";
+            break;
     }
 }
 
