@@ -1,5 +1,5 @@
 const auth = require("../middleware/auth.service");
-const bcrypt = require("bcrypt");
+//const bcrypt = require("bcrypt");
 const { User, validate } = require("../model/user.model");
 const express = require("express");
 const router = express.Router();
@@ -24,8 +24,8 @@ router.post("/", async (req, res) => {
     password: req.body.password,
     email: req.body.email
   });
-  // @ts-ignore
-  user.password = await bcrypt.hash(user.password, 10);
+  // TODO : replace with some other hash function
+  //user.password = await bcrypt.hash(user.password, 10);
   await user.save();
 
   // @ts-ignore
