@@ -2,7 +2,7 @@ var express = require('express');
 var router = express.Router();
 
 import * as jwt from 'jsonwebtoken';
-import * as fs from "fs";
+import * as fs from 'fs';
 
 router.post('/api/login',loginRoute);
 

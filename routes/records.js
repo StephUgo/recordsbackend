@@ -6,6 +6,7 @@ var router = express.Router();
 const MongoDBAccess = require('../db/dbaccess');
 
 const fs = require('fs');
+const auth = require('../auth/middleware/auth.service');
 
 /* GET to Search Records Default Service */
 router.get('/searchrecordsdefault/', function (req, res) {
@@ -25,7 +26,7 @@ router.get('/searchrecordsdefault/', function (req, res) {
 });
 
 /* GET to Search Records Service */
-router.get('/searchrecords/', function (req, res) {
+router.get('/searchrecords/', auth, function (req, res) {
 
     console.log(req.query);
 

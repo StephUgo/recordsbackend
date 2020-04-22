@@ -1,9 +1,9 @@
-var multer = require('multer');
-var express = require('express');
-var path = require('path');
-var logger = require('morgan');
-var cookieParser = require('cookie-parser');
-var bodyParser = require('body-parser');
+const multer = require('multer');
+const express = require('express');
+const path = require('path');
+const logger = require('morgan');
+const cookieParser = require('cookie-parser');
+const bodyParser = require('body-parser');
 
 //////////////////////
 // MANAGEMENT OF USERS
@@ -38,9 +38,11 @@ app.use(function (req, res, next) {
   next();
 });
 
+// @ts-ignore
 app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
+// @ts-ignore
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
@@ -74,7 +76,7 @@ MongoDB.connectDB(async (err) => {
     app.use('/records', records);
     app.use('/records/uploadcover', coverupload);
     app.use('/infos', infos);
-    app.use("/users", usersRoute);
+    app.use('/users', usersRoute);
 
     // catch 404 and forward to error handler
     app.use(function (req, res, next) {

@@ -10,7 +10,7 @@ router.get("/current", auth, async (req, res) => {
   res.send(user);
 });
 
-router.post("/", async (req, res) => {
+router.post("/login", async (req, res) => {
   // validate the request body first
   const { error } = validate(req.body);
   if (error) return res.status(400).send(error.details[0].message);
@@ -30,12 +30,17 @@ router.post("/", async (req, res) => {
 
   // @ts-ignore
   const token = user.generateAuthToken();
-  res.header("x-auth-token", token).send({
+  /*res.header("x-auth-token", token).send({
     _id: user._id,
     // @ts-ignore
     name: user.name,
     // @ts-ignore
     email: user.email
+  });*/
+  // set it in the HTTP Response body
+  res.status(200).json({
+    idToken: token, 
+    expiresIn: 120
   });
 });
 
