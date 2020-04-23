@@ -1,23 +1,19 @@
-const auth = require("../middleware/auth.service");
-//const bcrypt = require("bcrypt");
 const { User, validate } = require("../model/user.model");
 const express = require("express");
 const router = express.Router();
 
-router.get("/current", auth, async (req, res) => {
-  // @ts-ignore
-  const user = await User.findById(req.user._id).select("-password");
-  res.send(user);
-});
-
-router.post("/login", async (req, res) => {
-  // validate the request body first
+router.post("/register", async (req, res) => {
+  // Validate the request body first
   const { error } = validate(req.body);
-  if (error) return res.status(400).send(error.details[0].message);
+  if (error) {
+    return res.status(400).send(error.details[0].message);
+  }
 
-  //find an existing user
+  // Find an existing user
   let user = await User.findOne({ email: req.body.email });
-  if (user) return res.status(400).send("User already registered.");
+  if (user) {
+    return res.status(400).send("User already registered.");
+  }
 
   user = new User({
     name: req.body.name,
@@ -28,18 +24,33 @@ router.post("/login", async (req, res) => {
   //user.password = await bcrypt.hash(user.password, 10);
   await user.save();
 
+  res.status(200).json({ msg: 'New user is registered.' })
+});
+
+router.post("/login", async (req, res) => {
+  // Validate the request body first
+  const {error } = validate(req.body);
+  if (error) {
+    return res.status(400).send(error.details[0].message);
+  }
+
+  // Find an existing user
+  let user = await User.findOne({ email: req.body.email });
+  if (!user) {
+    return res.status(401).send("User hasn't registered yet.");
+  }
+
+  // TODO : replace by the comparison of hash values
+  if (user.toObject().password !== req.body.password) {
+    return res.status(401).send("Invalid password.");
+  }
+
   // @ts-ignore
   const token = user.generateAuthToken();
-  /*res.header("x-auth-token", token).send({
-    _id: user._id,
-    // @ts-ignore
-    name: user.name,
-    // @ts-ignore
-    email: user.email
-  });*/
-  // set it in the HTTP Response body
+
+  // Set it in the HTTP Response body
   res.status(200).json({
-    idToken: token, 
+    idToken: token,
     expiresIn: 120
   });
 });

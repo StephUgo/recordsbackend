@@ -3,7 +3,6 @@ const jwt = require('jsonwebtoken');
 const Joi = require('joi');
 const mongoose = require('mongoose');
 
-//simple schema
 const UserSchema = new mongoose.Schema({
   name: {
     type: String,
@@ -24,21 +23,20 @@ const UserSchema = new mongoose.Schema({
     minlength: 3,
     maxlength: 255
   },
-  //give different access rights if admin or not 
   isAdmin: Boolean
 });
 
 
-//custom method to generate authToken 
+// Custom method to generate authToken 
 UserSchema.methods.generateAuthToken = function() { 
   // Replace private key with RS256 key
-  const token = jwt.sign({ _id: this._id, isAdmin: this.isAdmin }, config.get('privateKey')); //get the private key from the config file -> environment variable
+  const token = jwt.sign({ _id: this._id, isAdmin: this.isAdmin }, config.get('privateKey')); //get the private key from the config file
   return token;
 }
 
 const User = mongoose.model('User', UserSchema);
 
-//function to validate user 
+// Function to validate user 
 function validateUser(user) {
   const schema = {
     name: Joi.string().min(3).max(50).required(),

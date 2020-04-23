@@ -25,7 +25,7 @@ router.get('/searchrecordsdefault/', function (req, res) {
     });
 });
 
-/* GET to Search Records Service */
+/* GET to Search Records Service (NB: this route require authentication) */
 router.get('/searchrecords/', auth, function (req, res) {
 
     console.log(req.query);
