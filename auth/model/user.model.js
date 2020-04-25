@@ -30,7 +30,13 @@ const UserSchema = new mongoose.Schema({
 // Custom method to generate authToken 
 UserSchema.methods.generateAuthToken = function() { 
   // Replace private key with RS256 key
-  const token = jwt.sign({ _id: this._id, isAdmin: this.isAdmin }, config.get('privateKey')); //get the private key from the config file
+  const token = jwt.sign(
+    { _id: this._id, isAdmin: this.isAdmin }, 
+      config.get('privateKey'), //get the private key from the config file
+      {
+        expiresIn: '2m'
+      }
+    );
   return token;
 }
 
