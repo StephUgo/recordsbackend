@@ -6,9 +6,10 @@ var router = express.Router();
 const MongoDBAccess = require('../db/dbaccess');
 
 const fs = require('fs');
+const auth = require('../auth/middleware/auth.service');
 
 /* GET to Search Records Default Service */
-router.get('/searchrecordsdefault/', function (req, res) {
+router.get('/searchrecordsdefault/',  auth, function (req, res) {
 
     // Set our collection
     var collection = getCollection();
@@ -24,8 +25,8 @@ router.get('/searchrecordsdefault/', function (req, res) {
     });
 });
 
-/* GET to Search Records Service */
-router.get('/searchrecords/', function (req, res) {
+/* GET to Search Records Service (NB: this route require authentication) */
+router.get('/searchrecords/', auth, function (req, res) {
 
     console.log(req.query);
 
@@ -91,7 +92,7 @@ router.get('/searchrecords/', function (req, res) {
 });
 
 /* POST to save a new record.*/
-router.post('/saverecord', function (req, res) {
+router.post('/saverecord',  auth, function (req, res) {
 
     console.log('/saverecord');
     console.log(req.body);
@@ -118,7 +119,7 @@ router.post('/saverecord', function (req, res) {
 /*
  * DELETE to deleterecord.
  */
-router.delete('/deleterecord/', function (req, res) {
+router.delete('/deleterecord/',  auth, function (req, res) {
 
     console.log(req.query);
 
@@ -151,7 +152,7 @@ router.delete('/deleterecord/', function (req, res) {
 });
 
 /* POST to update an existing record */
-router.post('/updaterecord', function (req, res) {
+router.post('/updaterecord',  auth, function (req, res) {
 
     console.log('/updaterecord');
     console.log(req.body);

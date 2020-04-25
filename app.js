@@ -1,11 +1,33 @@
-var multer = require('multer');
-var express = require('express');
-var path = require('path');
-var favicon = require('serve-favicon');
-var logger = require('morgan');
-var cookieParser = require('cookie-parser');
-var bodyParser = require('body-parser');
+const multer = require('multer');
+const express = require('express');
+const path = require('path');
+const logger = require('morgan');
+const cookieParser = require('cookie-parser');
+const bodyParser = require('body-parser');
 
+//////////////////////
+// MANAGEMENT OF USERS
+//////////////////////
+const config = require("config");
+const mongoose = require("mongoose");
+
+//use config module to get the privatekey, if no private key set, end the application
+if (!config.get("privateKey")) {
+  console.error("FATAL ERROR: privatekey is not defined.");
+  process.exit(1);
+}
+
+//connect to mongodb "recordsauth" database via mongoose
+mongoose
+  .connect("mongodb://localhost/recordsauth", { useNewUrlParser: true })
+  .then(() => console.log("Connected to MongoDB..."))
+  .catch(err => console.error("Could not connect to MongoDB..."));
+
+
+
+/////////////////////
+// MANAGE EXPRESS APP
+/////////////////////
 var app = express();
 
 //Enable CORS
@@ -16,16 +38,18 @@ app.use(function (req, res, next) {
   next();
 });
 
-// uncomment after placing your favicon in /public
-//app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
+// @ts-ignore
 app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
+// @ts-ignore
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
 
-// Database
+///////////////////
+// Records Database
+///////////////////
 
 // Load MongoDB utils
 const MongoDB = require('./db/dbaccess');
@@ -36,9 +60,11 @@ MongoDB.connectDB(async (err) => {
   if (err) throw err
 
   try {
+    // Records DB access is ok, we can create and manage routes
     var records = require('./routes/records');
     var infos = require('./routes/infos');
     var coverupload = require('./routes/coverupload');
+    var usersRoute = require("./auth/routes/user.route");
 
     app.use(function (req, res, next) {
       // @ts-ignore
@@ -50,6 +76,7 @@ MongoDB.connectDB(async (err) => {
     app.use('/records', records);
     app.use('/records/uploadcover', coverupload);
     app.use('/infos', infos);
+    app.use('/users', usersRoute);
 
     // catch 404 and forward to error handler
     app.use(function (req, res, next) {
