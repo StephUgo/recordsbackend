@@ -39,3 +39,4 @@ testem.log
 Thumbs.db
 
 .key
+auth/keys/jwtRS256.key
