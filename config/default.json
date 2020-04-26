@@ -1,4 +1,4 @@
 {
     "dbUrl": "mongodb://localhost:27017/",
-    "privateKey": "myprivatekey"
+    "privateKey": "auth/keys/jwtRS256.key"
 }

@@ -2,6 +2,7 @@ const config = require('config');
 const jwt = require('jsonwebtoken');
 const Joi = require('joi');
 const mongoose = require('mongoose');
+const fs = require('fs');
 
 const UserSchema = new mongoose.Schema({
   name: {
@@ -17,23 +18,31 @@ const UserSchema = new mongoose.Schema({
     maxlength: 255,
     unique: true
   },
-  password: {
+  passwordHash: {
     type: String,
     required: true,
     minlength: 3,
     maxlength: 255
   },
+  salt: {
+    type: String,
+    required: true,
+    minlength: 16,
+    maxlength: 32
+  },
   isAdmin: Boolean
 });
 
+const privateKey = fs.readFileSync(config.get('privateKey'));
 
 // Custom method to generate authToken 
 UserSchema.methods.generateAuthToken = function() { 
   // Replace private key with RS256 key
   const token = jwt.sign(
     { _id: this._id, isAdmin: this.isAdmin }, 
-      config.get('privateKey'), //get the private key from the config file
+      privateKey,
       {
+        algorithm: 'RS256',
         expiresIn: '2m'
       }
     );

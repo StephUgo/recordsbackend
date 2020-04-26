@@ -1,5 +1,8 @@
 const jwt = require("jsonwebtoken");
 const config = require("config");
+const fs = require('fs');
+
+const privateKey = fs.readFileSync(config.get('privateKey'));
 
 // Export an Express middleware function to use on routes which requires authentication
 module.exports = function(req, res, next) {
@@ -10,7 +13,7 @@ module.exports = function(req, res, next) {
 
   try {
     // If we can verify the token, set the decoded user (_id and isAdmin) to the request and pass to next middleware
-    const decoded = jwt.verify(token, config.get("privateKey"));
+    const decoded = jwt.verify(token, privateKey, { algorithms: ['RS256'] });
     req.user = decoded;
     next();
   } catch (ex) {

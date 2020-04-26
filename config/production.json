@@ -1,3 +1,4 @@
 {
-    "dbUrl": "mongodb://database:27017/"
+    "dbUrl": "mongodb://database:27017/",
+    "privateKey": "auth/keys/jwtRS256.key"
 }
