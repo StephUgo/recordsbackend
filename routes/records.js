@@ -177,7 +177,8 @@ router.post('/updaterecord',  auth, function (req, res) {
         'Period': body.Period,
         'Comments': body.Comments,
         'ImageFileName': body.ImageFileName,
-        'Reference': body.Reference
+        'Reference': body.Reference,
+        'keywords': body.keywords
     }
 
     collection.updateOne(
