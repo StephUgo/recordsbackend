@@ -43,7 +43,7 @@ UserSchema.methods.generateAuthToken = function() {
       privateKey,
       {
         algorithm: 'RS256',
-        expiresIn: '2m'
+        expiresIn: '5m'
       }
     );
   return token;
