@@ -6,8 +6,10 @@
 
 var app = require('../app');
 var debug = require('debug')('recordsbackend:server');
-var https = require('https');
+const http = require('http');
+const https = require('https');
 const fs = require('fs');
+var config = require('config');
 
 /**
  * Get port from environment and store in Express.
@@ -20,11 +22,24 @@ app.set('port', port);
  * Create HTTPS server.
  */
 
-var server = https.createServer({
-  key: fs.readFileSync('./ssl/privateKey.key'),
-  cert: fs.readFileSync('./ssl/certificate.crt')
-  //passphrase: 'Passphrase if any'
-}, app);
+const useHTTPS = config.get('useHTTPS');
+console.log("useHTTPS  = " + useHTTPS);
+var server;
+if (useHTTPS) {
+  server = https.createServer({
+    key: fs.readFileSync('./ssl/privateKey.key'),
+    cert: fs.readFileSync('./ssl/certificate.crt')
+    /*    key: fs.readFileSync('./ssl/server-key.pem'), 
+        cert: fs.readFileSync('./ssl/server-crt.pem'), 
+        ca: fs.readFileSync('./ssl/ca-crt.pem'),
+        requestCert: true, 
+        rejectUnauthorized: true*/
+        //passphrase: 'Passphrase if any'
+    }, app);
+} else {
+  server = http.createServer({}, app);
+}
+
 
 /**
  * Listen on provided port, on all network interfaces.
