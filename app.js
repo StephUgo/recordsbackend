@@ -17,9 +17,14 @@ if (!config.get("privateKey")) {
   process.exit(1);
 }
 
+const dbUrl = config.get('dbUrl');
+if (!dbUrl) {
+  console.error("FATAL ERROR: no URL for the database.");
+  process.exit(1);
+}
 //connect to mongodb "recordsauth" database via mongoose
 mongoose
-  .connect("mongodb://localhost/recordsauth", { useNewUrlParser: true })
+  .connect(dbUrl + "recordsauth", { useNewUrlParser: true })
   .then(() => console.log("Connected to MongoDB..."))
   .catch(err => console.error("Could not connect to MongoDB..."));
 
