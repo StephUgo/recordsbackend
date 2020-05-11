@@ -8,11 +8,11 @@ const MongoDBAccess = require('../db/dbaccess');
 router.get('/', function (req, res, next) {
   const db = MongoDBAccess.getDB();
 
-  var collection = db.collection('soulfunk');
+  var collection = db.collection('records');
   collection.count({}, function (error, numOfDocs) {
     if (error) throw error;
 
-    res.render('infos', { title: 'System infos', dbVersion: 'MongoDB Version = 4.2', count: numOfDocs });
+    res.json( { title: 'System infos', dbVersion: 'MongoDB Version = 4.2', count: numOfDocs });
   });
 
 });
