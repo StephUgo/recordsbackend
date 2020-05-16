@@ -38,25 +38,25 @@ router.get('/searchrecords/', auth, function (req, res) {
     // Set search criterion
     setStyleFromId(req.query.Style, searchRequest);
 
-    if ((typeof req.query.Artiste != 'undefined') && (req.query.Artiste != '')) {
+    if ((typeof req.query.Artiste !== typeof undefined) && (req.query.Artiste != '')) {
         searchRequest.Artist = { $regex: new RegExp('.*' + req.query.Artiste + '.*', 'i') };
     }
-    if ((typeof req.query.Titre != 'undefined') && (req.query.Titre != '')) {
+    if ((typeof req.query.Titre !== typeof undefined) && (req.query.Titre != '')) {
         searchRequest.Title = { $regex: new RegExp('.*' + req.query.Titre + '.*', 'i') };
     }
-    if ((typeof req.query.Format != 'undefined') && (req.query.Format != '')) {
+    if ((typeof req.query.Format !== typeof undefined) && (req.query.Format != '')) {
         searchRequest.Format = { $regex: new RegExp('.*' + req.query.Format + '.*', 'i') };
     }
-    if ((typeof req.query.Label != 'undefined') && (req.query.Label != '')) {
+    if ((typeof req.query.Label !== typeof undefined) && (req.query.Label != '')) {
         searchRequest.Label = { $regex: new RegExp('.*' + req.query.Label + '.*', 'i') };
     }
-    if ((typeof req.query.Country != 'undefined') && (req.query.Country != '')) {
+    if ((typeof req.query.Country !== typeof undefined) && (req.query.Country != '')) {
         searchRequest.Country = { $regex: new RegExp('.*' + req.query.Country + '.*', 'i') };
     }
-    if ((typeof req.query.Period != 'undefined') && (req.query.Period != '')) {
+    if ((typeof req.query.Period !== typeof undefined) && (req.query.Period != '')) {
         searchRequest.Period = { $regex: new RegExp('.*' + req.query.Period + '.*', 'i') };
     }
-    if ((typeof req.query.Year != 'undefined') && (req.query.Year != '')) {
+    if ((typeof req.query.Year !== typeof undefined) && (req.query.Year != '')) {
         searchRequest.Year = Number(req.query.Year);
     }
 
@@ -168,17 +168,17 @@ router.post('/updaterecord',  auth, function (req, res) {
     }
 
     var newFields = {
-        'Artist': body.Artist,
-        'Title': body.Title,
-        'Format': body.Format,
-        'Label': body.Label,
-        'Country': body.Country,
-        'Year': body.Year,
-        'Period': body.Period,
-        'Comments': body.Comments,
-        'ImageFileName': body.ImageFileName,
-        'Reference': body.Reference,
-        'keywords': body.keywords
+        'Artist': (typeof body.Artist !== typeof undefined) ? body.Artist : null,
+        'Title': (typeof body.Title !== typeof undefined) ? body.Title : null,
+        'Format': (typeof body.Format !== typeof undefined) ? body.Format : null,
+        'Label': (typeof body.Label !== typeof undefined) ? body.Label : null,
+        'Country': (typeof body.Country !== typeof undefined) ? body.Country : null,
+        'Year': (typeof body.Year !== typeof undefined) ? body.Year : null,
+        'Period': (typeof body.Period !== typeof undefined) ? body.Period : null,
+        'Comments': (typeof body.Comments !== typeof undefined) ? body.Comments : null,
+        'ImageFileName': (typeof body.ImageFileName !== typeof undefined) ? body.ImageFileName : null,
+        'Reference': (typeof body.Reference !== typeof undefined) ? body.Reference : null,
+        'keywords': (typeof body.keywords !== typeof undefined) ? body.keywords : null
     }
 
     collection.updateOne(
@@ -196,6 +196,43 @@ function getCollection(styleId) {
     // Set our internal DB variable
     const db = MongoDBAccess.getDB();
     return db.collection('records');
+}
+
+
+/* POST to update an existing record */
+router.post('/updatekeywords',  auth, function (req, res) {
+
+    console.log('/updatekeywords');
+    console.log(req.body);
+
+    var body = req.body;
+    if (!Array.isArray(body)) {
+        return res.status(400).send("updatekeywords post content shall be provided within an array.");
+    }
+    // Set our collection
+    var collection = getCollection();
+
+    var allDbUpdateRequest = [];
+    body.forEach((bodyItem) => {
+        allDbUpdateRequest.push(updateKeywordsForOneDocument(collection, bodyItem));
+    });
+    Promise.all(allDbUpdateRequest).then(function (results) {
+        res.send({ msg: 'Keywords updated.' } );
+    }).catch(function (err) {
+        console.log('One failure at least occurred in the keywords update: ' + err); //failure callback(if any one request got rejected)
+        res.send({ msg: 'One failure at least occurred in the keywords update.' } );
+    });
+});
+
+function updateKeywordsForOneDocument(collection, bodyItem) {
+    var id = bodyItem.ID;
+    var newFields = {
+        'keywords': (typeof bodyItem.keywords !== typeof undefined) ? bodyItem.keywords : null
+    }
+
+    return collection.updateOne(
+        { _id: new mongodb.ObjectID(id) },
+        { $set: newFields });
 }
 
 function setStyleFromId(styleId, parentObject) {
