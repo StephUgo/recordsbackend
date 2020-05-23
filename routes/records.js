@@ -166,8 +166,12 @@ router.post('/updaterecord',  auth, function (req, res) {
     if (!isNaN(body.Year)) {
         body.Year = Number(body.Year);
     }
+    
+    // Update style from Id to String
+    setStyleFromId(body.Style, body);
 
     var newFields = {
+        'Style': (typeof body.Style !== typeof undefined) ? body.Style : null,
         'Artist': (typeof body.Artist !== typeof undefined) ? body.Artist : null,
         'Title': (typeof body.Title !== typeof undefined) ? body.Title : null,
         'Format': (typeof body.Format !== typeof undefined) ? body.Format : null,
