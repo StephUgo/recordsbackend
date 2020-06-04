@@ -59,6 +59,14 @@ router.get('/searchrecords/', auth, function (req, res) {
     if ((typeof req.query.Year !== typeof undefined) && (req.query.Year != '')) {
         searchRequest.Year = Number(req.query.Year);
     }
+    if ((typeof req.query.Keywords === typeof '') && (req.query.Keywords != '')) {
+        var reqKeywords = req.query.Keywords.split(';');
+        if (reqKeywords.length > 1) {
+            searchRequest.keywords = { $all: reqKeywords} ;
+        } else {
+            searchRequest.keywords = reqKeywords[0];
+        }
+    }
 
     var searchOptions = {};
     searchOptions.sort = getSortOptions(req.query.Sort);
