@@ -62,9 +62,13 @@ router.get('/searchrecords/', auth, function (req, res) {
     if ((typeof req.query.Keywords === typeof '') && (req.query.Keywords != '')) {
         var reqKeywords = req.query.Keywords.split(';');
         if (reqKeywords.length > 1) {
-            searchRequest.keywords = { $all: reqKeywords} ;
+            var regexKeywords = [];
+            reqKeywords.forEach(element => {
+                regexKeywords.push({keywords: { $regex: new RegExp('.*' + element + '.*', 'i') }});
+            });
+            searchRequest.$and = regexKeywords ;
         } else {
-            searchRequest.keywords = reqKeywords[0];
+            searchRequest.keywords = { $regex: new RegExp('.*' + reqKeywords[0] + '.*', 'i') };
         }
     }
 
