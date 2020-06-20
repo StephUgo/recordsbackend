@@ -59,7 +59,7 @@ router.get('/searchrecords/', auth, function (req, res) {
     if ((typeof req.query.Year !== typeof undefined) && (req.query.Year != '')) {
         searchRequest.Year = Number(req.query.Year);
     }
-    if ((typeof req.query.Keywords === typeof '') && (req.query.Keywords != '')) {
+    if ((typeof req.query.Keywords === 'string' || req.query.Keywords instanceof String) && (req.query.Keywords != '')) {
         var reqKeywords = req.query.Keywords.split(';');
         if (reqKeywords.length > 1) {
             var regexKeywords = [];
@@ -158,9 +158,11 @@ router.delete('/deleterecord/',  auth, function (req, res) {
             }
         });*/
 
-    collection.deleteOne({ '_id': new mongodb.ObjectID(recordToDelete) }, function (err, results) {
-        res.send((err === null) ? { msg: '' } : { msg: 'error: ' + err });
-    });
+    if (typeof recordToDelete === 'string') {
+        collection.deleteOne({ '_id': new mongodb.ObjectID(recordToDelete) }, function (err, results) {
+            res.send((err === null) ? { msg: '' } : { msg: 'error: ' + err });
+        });
+    }
 });
 
 /* POST to update an existing record */
