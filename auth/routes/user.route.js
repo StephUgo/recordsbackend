@@ -58,7 +58,7 @@ router.post("/login", async (req, res) => {
   // Set it in the HTTP Response body
   res.status(200).json({
     idToken: token,
-    expiresIn: 300
+    expiresIn: 600
   });
 });
 
