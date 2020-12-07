@@ -320,7 +320,10 @@ function setStyleFromId(styleId, parentObject) {
         case '21':
             parentObject.Style = "Brit Funk";
             break;
-    }
+        case '22':
+            parentObject.Style = "Funky French";
+            break;
+	}
 }
 
 
