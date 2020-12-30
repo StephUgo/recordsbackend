@@ -197,7 +197,8 @@ router.post('/updaterecord',  auth, function (req, res) {
         'ImageFileName': (typeof body.ImageFileName !== typeof undefined) ? body.ImageFileName : null,
         'Reference': (typeof body.Reference !== typeof undefined) ? body.Reference : null,
         'keywords': (typeof body.keywords !== typeof undefined) ? body.keywords : null,
-        'additionalPics': (typeof body.additionalPics !== typeof undefined) ? body.additionalPics : null
+        'additionalPics': (typeof body.additionalPics !== typeof undefined) ? body.additionalPics : null,
+        'audioSamples': (typeof body.audioSamples !== typeof undefined) ? body.audioSamples : null
     }
 
     collection.updateOne(
