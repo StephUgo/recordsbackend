@@ -3,6 +3,7 @@ var crypto = require('crypto');
 const { User, validate } = require("../model/user.model");
 const express = require("express");
 const router = express.Router();
+const auth = require('../../auth/middleware/auth.service');
 
 router.post("/register", async (req, res) => {
   // Validate the request body first
@@ -88,5 +89,51 @@ var sha512 = function (password, salt) {
     passwordHash: value
   };
 };
+
+
+router.post("/updatepwd", auth, async (req, res) => {
+  if (req.body.user === undefined) {
+    return res.status(400).send("Undefined user.");
+  }
+  if (req.body.newpassword === undefined) {
+    return res.status(400).send("Undefined new password.");
+  }
+  // Validate the user provided in the request body first
+  const { error } = validate(req.body.user);
+  if (error) {
+    return res.status(400).send(error.details[0].message);
+  }
+
+  // Find an existing user
+  let user = await User.findOne({ email: req.body.user.email });
+  if (!user) {
+    return res.status(400).send("Unknown user.");
+  }
+
+  const jsUser = user.toObject();
+  // Check that the old password is correct
+  if (jsUser.passwordHash !== sha512(req.body.user.password, jsUser.salt).passwordHash) {
+    return res.status(401).send("Invalid password.");
+  }
+
+  // Delete old version of User
+  await User.deleteOne({ email: req.body.user.email });
+
+  var salt = genRandomString(16); // Gives us salt of length 16
+  var passwordData = sha512(req.body.newpassword, salt);
+
+  user = new User({
+    name: req.body.user.name,
+    email: req.body.user.email,
+    passwordHash: passwordData.passwordHash,
+    salt: passwordData.salt
+  });
+
+  // Save new version of User
+  await user.save();
+
+  res.status(200).json({ msg: 'User data updated.' })
+});
+
 
 module.exports = router;
