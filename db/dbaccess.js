@@ -16,15 +16,32 @@ console.log("dbUrl  = " + uri);
 
 let _db;
 
+const promiseRetry = require('promise-retry')
+
+const options = {
+    useNewUrlParser: true,
+    reconnectTries: 60,
+    reconnectInterval: 1000,
+    poolSize: 10,
+    bufferMaxEntries: 0
+}
+
+const promiseRetryOptions = {
+    retries: options.reconnectTries,
+    factor: 1.5,
+    minTimeout: options.reconnectInterval,
+    maxTimeout: 5000
+}
+
 const connectDB = async (callback) => {
-    try {
-        MongoClient.connect(uri, (err, dbServer) => {
-            _db = dbServer.db('recordcollectiondb')
-            return callback(err)
-        })
-    } catch (e) {
-        throw e
-    }
+    promiseRetry((retry, number) => {
+        console.log(`MongoClient connecting to ${uri} - retry number: ${number}`)
+        return MongoClient.connect(uri, options).then((dbServer) => {
+            console.log('MongoClient connected !');
+            _db = dbServer.db('recordcollectiondb');
+            return callback();
+        }).catch(retry)
+    }, promiseRetryOptions)
 }
 
 const getDB = () => _db

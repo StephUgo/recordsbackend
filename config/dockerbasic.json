@@ -1,0 +1,5 @@
+{
+    "dbUrl": "mongodb://172.17.0.1:27017/",
+    "privateKey": "auth/keys/jwtRS256.key",
+    "useHTTPS": false
+}

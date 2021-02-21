@@ -4,6 +4,7 @@ const path = require('path');
 const logger = require('morgan');
 const cookieParser = require('cookie-parser');
 const bodyParser = require('body-parser');
+const promiseRetry = require('promise-retry');
 
 //////////////////////
 // MANAGEMENT OF USERS
@@ -23,12 +24,27 @@ if (!dbUrl) {
   process.exit(1);
 }
 //connect to mongodb "recordsauth" database via mongoose
-mongoose
-  .connect(dbUrl + "recordsauth", { useNewUrlParser: true })
-  .then(() => console.log("Connected to MongoDB..."))
-  .catch(err => console.error("Could not connect to MongoDB..."));
+
+const options = {
+  useNewUrlParser: true,
+  reconnectTries: 60,
+  reconnectInterval: 1000,
+  poolSize: 10,
+  bufferMaxEntries: 0
+}
+
+const promiseRetryOptions = {
+  retries: options.reconnectTries,
+  factor: 1.5,
+  minTimeout: options.reconnectInterval,
+  maxTimeout: 5000
+}
 
 
+promiseRetry((retry, number) => {
+    console.log(`Mongooose connecting to ${dbUrl} - retry number: ${number}`)
+    return mongoose.connect(dbUrl + "recordsauth", { useNewUrlParser: true }).catch(retry)
+}, promiseRetryOptions);
 
 /////////////////////
 // MANAGE EXPRESS APP
@@ -61,8 +77,7 @@ const MongoDB = require('./db/dbaccess');
 
 // Connect to MongoDB and put server instantiation code inside
 // because we start the connection first
-MongoDB.connectDB(async (err) => {
-  if (err) throw err
+MongoDB.connectDB(async () => {
 
   try {
     // Records DB access is ok, we can create and manage routes

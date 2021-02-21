@@ -1,4 +1,4 @@
-FROM node:12.14.0
+FROM node:14.15.5
 
 # Create app directory
 WORKDIR /usr/src/recordsbackend
@@ -15,6 +15,9 @@ RUN npm install
 # Bundle app source
 COPY . .
 
+# use dockerbasic value for manual composition
+# ENV NODE_ENV dockerbasic
+# use production value for composition with Docker compose or K8S
 ENV NODE_ENV production
 
 EXPOSE 3000
