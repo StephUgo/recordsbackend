@@ -41,9 +41,12 @@ const promiseRetryOptions = {
 }
 
 
+// INITIAL CONNECTION OF MONGOOSE TO MONGODB (used for recordsauth DB)
 promiseRetry((retry, number) => {
     console.log(`Mongooose connecting to ${dbUrl} - retry number: ${number}`)
-    return mongoose.connect(dbUrl + "recordsauth", { useNewUrlParser: true }).catch(retry)
+    return mongoose.connect(dbUrl + "recordsauth", { useNewUrlParser: true }).then(() => {
+      console.log(`Mongooose connected to ${dbUrl} !`);
+    }).catch(retry)
 }, promiseRetryOptions);
 
 /////////////////////
@@ -75,10 +78,11 @@ app.use(express.static(path.join(__dirname, 'public')));
 // Load MongoDB utils
 const MongoDB = require('./db/dbaccess');
 
-// Connect to MongoDB and put server instantiation code inside
+
+// INITIAL CONNECTION TO MONGODB WITH THE NODEJS DRIVER (used for records DB)
+// Note : Connect to MongoDB and put server instantiation code inside
 // because we start the connection first
 MongoDB.connectDB(async () => {
-
   try {
     // Records DB access is ok, we can create and manage routes
     var records = require('./routes/records');
