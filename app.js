@@ -89,6 +89,7 @@ MongoDB.connectDB(async () => {
     var infos = require('./routes/infos');
     var coverupload = require('./routes/coverupload');
     var usersRoute = require("./auth/routes/user.route");
+    var studios = require('./routes/studios');
 
     app.use(function (req, res, next) {
       // @ts-ignore
@@ -101,6 +102,7 @@ MongoDB.connectDB(async () => {
     app.use('/records/uploadcover', coverupload);
     app.use('/infos', infos);
     app.use('/users', usersRoute);
+    app.use('/studios', studios);
 
     // catch 404 and forward to error handler
     app.use(function (req, res, next) {
