@@ -3,7 +3,8 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "start": "node ./bin/www"
+    "start": "node ./bin/www",
+    "test": "mocha --reporter spec tests/**.js --exit"
   },
   "dependencies": {
     "body-parser": "~1.19.0",
@@ -19,5 +20,10 @@
     "multer": "1.4.2",
     "promise-retry": "^2.0.1",
     "serve-favicon": "~2.5.0"
+  },
+  "devDependencies": {
+    "@types/mocha": "^8.2.2",
+    "chai": "^4.3.4",
+    "supertest": "^6.1.3"
   }
 }
