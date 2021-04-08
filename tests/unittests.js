@@ -29,4 +29,19 @@ describe('Our server', function() {
       });
   });
 
+
+  it('Login with a test user that already exists', function(done) {
+    request(app)
+      .post('/users/login')
+      .set('Content-Type', 'application/json')
+      .send({ name: 'Test', email: 'test@test.com', password: 'TestTest'})
+      .expect('Content-Type', /json/)
+      .expect(200, function(err, res) {
+        if (err) { return done(err); }
+        var callStatus = res.body.expiresIn === 600;
+        expect(callStatus).to.equal(true);
+        // Done
+        done();
+      });
+  });
 });
