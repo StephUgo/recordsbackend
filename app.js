@@ -5,12 +5,38 @@ const logger = require('morgan');
 const cookieParser = require('cookie-parser');
 const bodyParser = require('body-parser');
 const promiseRetry = require('promise-retry');
+const figlet = require('figlet');
+
+////////////////////////
+// APP & VERSION DISPLAY
+////////////////////////
+const version = process.env.npm_package_version;
+
+// We wrap figlet function into a promise for a more practical use
+function figletFunctionWrapper() {
+  return new Promise((resolve, reject) => {
+    figlet.text('Records Backend', {
+      font: 'Big',
+      horizontalLayout: 'default',
+      verticalLayout: 'default',
+      width: 80,
+      whitespaceBreak: true
+    }, function(err, data) {
+      var versionSuffix = '\nRecords Backend Version Number : ' + version + '\n';
+      if (err) {
+          reject('Something went wrong using figlet...'+ versionSuffix);
+      }
+      resolve(data + versionSuffix);
+    });
+  });
+}
 
 //////////////////////
 // MANAGEMENT OF USERS
 //////////////////////
 const config = require("config");
 const mongoose = require("mongoose");
+
 
 //use config module to get the privatekey, if no private key set, end the application
 if (!config.get("privateKey")) {
@@ -46,6 +72,9 @@ promiseRetry((retry, number) => {
     console.log(`Mongooose connecting to ${dbUrl} - retry number: ${number}`)
     return mongoose.connect(dbUrl + "recordsauth", { useNewUrlParser: true }).then(() => {
       console.log(`Mongooose connected to ${dbUrl} !`);
+      // USER DB IS OK, WE PROCEED AND DISPLAY THE APP LOGO
+      figletFunctionWrapper().then((data)=> {console.log(data)})
+        .catch((error)=> {console.log(error)});
     }).catch(retry)
 }, promiseRetryOptions);
 
@@ -77,6 +106,8 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 // Load MongoDB utils
 const MongoDB = require('./db/dbaccess');
+const c = require('config');
+const date = require('joi/lib/types/date');
 
 
 // INITIAL CONNECTION TO MONGODB WITH THE NODEJS DRIVER (used for records DB)
