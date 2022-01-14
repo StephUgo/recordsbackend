@@ -1,7 +1,7 @@
 version: '3.4'
 services:
   recordsbackend: # name of the node backend
-    image: recordsbackendprod:0.6
+    image: recordsbackend:0.7
     ports:
       - "3000:3000" #specify ports mapping
     depends_on:
@@ -12,8 +12,8 @@ services:
     ports:
       - "27017:27017"
     volumes:
-       - mongodata4:/data/db
+       - recordsdb_volume:/data/db
 volumes:
-  mongodata4:
+  recordsdb_volume:
   
 

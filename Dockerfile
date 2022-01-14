@@ -16,7 +16,7 @@ RUN npm install
 COPY . .
 
 # use dockerbasic value for manual composition
-# ENV NODE_ENV dockerbasic
+#ENV NODE_ENV dockerbasic
 # use production value for composition with Docker compose or K8S
 ENV NODE_ENV production
 
