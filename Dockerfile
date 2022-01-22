@@ -1,4 +1,4 @@
-FROM node:14.15.5
+FROM node:14.15.5-slim
 
 # Create app directory
 WORKDIR /usr/src/recordsbackend

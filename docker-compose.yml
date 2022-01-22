@@ -12,8 +12,12 @@ services:
     ports:
       - "27017:27017"
     volumes:
-       - recordsdb_volume:/data/db
+       - recordsmongodb_volume:/data/db
 volumes:
-  recordsdb_volume:
-  
+  recordsmongodb_volume:
+    driver: local
+    driver_opts:
+      o: bind
+      type: none
+      device: /srv/recordsmongodb
 
