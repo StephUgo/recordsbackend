@@ -201,7 +201,8 @@ router.post('/updaterecord',  auth, function (req, res) {
         'Reference': (typeof body.Reference !== typeof undefined) ? body.Reference : null,
         'keywords': (typeof body.keywords !== typeof undefined) ? body.keywords : null,
         'additionalPics': (typeof body.additionalPics !== typeof undefined) ? body.additionalPics : null,
-        'audioSamples': (typeof body.audioSamples !== typeof undefined) ? body.audioSamples : null
+        'audioSamples': (typeof body.audioSamples !== typeof undefined) ? body.audioSamples : null,
+        'storageLocation': (typeof body.storageLocation !== typeof undefined) ? body.storageLocation : null
     }
 
     collection.updateOne(
