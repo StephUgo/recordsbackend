@@ -223,7 +223,7 @@ function getCollection(styleId) {
 }
 
 
-/* POST to update an existing record */
+/* POST to update keywords on a set of existing record */
 router.post('/updatekeywords',  auth, function (req, res) {
 
     console.log('/updatekeywords');
@@ -253,6 +253,65 @@ function updateKeywordsForOneDocument(collection, bodyItem) {
     var newFields = {
         'keywords': (typeof bodyItem.keywords !== typeof undefined) ? bodyItem.keywords : null
     }
+
+    return collection.updateOne(
+        { _id: new mongodb.ObjectID(id) },
+        { $set: newFields });
+}
+
+/* POST to update a set of existing records */
+router.post('/updaterecords',  auth, function (req, res) {
+
+    console.log('/updaterecords');
+    console.log(req.body);
+
+    var body = req.body;
+    if (!Array.isArray(body)) {
+        return res.status(400).send("updaterecords post content shall be provided within an array.");
+    }
+    // Set our collection
+    var collection = getCollection();
+
+    var allDbUpdateRequest = [];
+    body.forEach((bodyItem) => {
+        allDbUpdateRequest.push(updateOneRecord(collection, bodyItem));
+    });
+    Promise.all(allDbUpdateRequest).then(function (results) {
+        res.send({ msg: 'Records updated.' } );
+    }).catch(function (err) {
+        console.log('One failure at least occurred in the records update: ' + err); //failure callback(if any one request got rejected)
+        res.send({ msg: 'One failure at least occurred in the records update.' } );
+    });
+});
+
+function updateOneRecord(collection, bodyItem) {
+    var id = bodyItem.ID;
+
+    if (!isNaN(bodyItem.Year)) {
+        bodyItem.Year = Number(bodyItem.Year);
+    }
+    
+    // Update style from Id to String
+    setStyleFromId(bodyItem.Style, bodyItem);
+
+    var newFields = {
+        'Style': (typeof bodyItem.Style !== typeof undefined) ? bodyItem.Style : null,
+        'Artist': (typeof bodyItem.Artist !== typeof undefined) ? bodyItem.Artist : null,
+        'Title': (typeof bodyItem.Title !== typeof undefined) ? bodyItem.Title : null,
+        'Format': (typeof bodyItem.Format !== typeof undefined) ? bodyItem.Format : null,
+        'Label': (typeof bodyItem.Label !== typeof undefined) ? bodyItem.Label : null,
+        'Country': (typeof bodyItem.Country !== typeof undefined) ? bodyItem.Country : null,
+        'Year': (typeof bodyItem.Year !== typeof undefined) ? bodyItem.Year : null,
+        'Period': (typeof bodyItem.Period !== typeof undefined) ? bodyItem.Period : null,
+        'Comments': (typeof bodyItem.Comments !== typeof undefined) ? bodyItem.Comments : null,
+        'ImageFileName': (typeof bodyItem.ImageFileName !== typeof undefined) ? bodyItem.ImageFileName : null,
+        'Reference': (typeof bodyItem.Reference !== typeof undefined) ? bodyItem.Reference : null,
+        'keywords': (typeof bodyItem.keywords !== typeof undefined) ? bodyItem.keywords : null,
+        'additionalPics': (typeof bodyItem.additionalPics !== typeof undefined) ? bodyItem.additionalPics : null,
+        'audioSamples': (typeof bodyItem.audioSamples !== typeof undefined) ? bodyItem.audioSamples : null,
+        'storageLocation': (typeof bodyItem.storageLocation !== typeof undefined) ? bodyItem.storageLocation : null
+    }
+
 
     return collection.updateOne(
         { _id: new mongodb.ObjectID(id) },
