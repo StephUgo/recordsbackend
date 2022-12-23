@@ -59,6 +59,9 @@ router.get('/searchrecords/', auth, function (req, res) {
     if ((typeof req.query.Reference !== typeof undefined) && (req.query.Reference != '')) {
         searchRequest.Reference = { $regex: new RegExp('.*' + req.query.Reference + '.*', 'i') };
     }
+    if ((typeof req.query.StorageLocation !== typeof undefined) && (req.query.StorageLocation != '')) {
+        searchRequest.storageLocation = { $regex: new RegExp('.*' + req.query.StorageLocation + '.*', 'i') };
+    }
     if ((typeof req.query.Year !== typeof undefined) && (req.query.Year != '')) {
         searchRequest.Year = Number(req.query.Year);
     }
