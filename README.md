@@ -1,4 +1,4 @@
-# recordsbackend
+# Records Backend
 
 This project is an NodeJS backend enabling to manage a vinyl record collection (in fact mine... :). 
 
