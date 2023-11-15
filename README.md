@@ -12,7 +12,7 @@ The main functions are :
 The software stack used for this development is quite straightforward, mainly : 
   - NodeJS ;
   - Express ;
-  - JSONWebToken": "^9.0.0",
+  - JSONWebToken ;
   - MongoDB ;
   - Mongoose ;
   - Multer.
