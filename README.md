@@ -1,6 +1,6 @@
 # Records Backend
 
-This project is an NodeJS backend enabling to manage a vinyl record collection (in fact mine... :). 
+This project is an NodeJS backend enabling to manage a vinyl record collection (at least mine... :). 
 
 It can be used with the following Angular frontend available at https://github.com/StephUgo/recordsfrontend.
 
