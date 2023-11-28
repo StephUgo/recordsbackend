@@ -83,6 +83,20 @@ promiseRetry((retry, number) => {
 /////////////////////
 var app = express();
 
+// set up rate limiter: maximum of 10 requests per minute
+const RateLimit = require('express-rate-limit');
+const limiter = RateLimit({
+  windowMs: 10 * 60 * 1000, // 10 minutes
+  max: 100, // max 100 requests per windowMs
+  message: "Keep quiet, maybe get a life instead of spamming the api.",
+	standardHeaders: true,
+	legacyHeaders: true, 
+  skipFailedRequests: true
+});
+
+// apply rate limiter to all requests
+app.use(limiter);
+
 //Enable CORS
 app.use(function (req, res, next) {
   res.header("Access-Control-Allow-Origin", "*");
