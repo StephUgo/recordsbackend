@@ -83,11 +83,12 @@ promiseRetry((retry, number) => {
 /////////////////////
 var app = express();
 
-// set up rate limiter: maximum of 10 requests per minute
+// TODO : adapt limit for each routes
+// set up rate limiter: maximum of requests per minute
 const RateLimit = require('express-rate-limit');
 const limiter = RateLimit({
   windowMs: 10 * 60 * 1000, // 10 minutes
-  max: 100, // max 100 requests per windowMs
+  max: 100000, // max requests per windowMs 
   message: "Keep quiet, maybe get a life instead of spamming the api.",
 	standardHeaders: true,
 	legacyHeaders: true, 

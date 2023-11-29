@@ -1,6 +1,7 @@
 var express = require('express');
 var mongodb = require('mongodb');
 var router = express.Router();
+var _ = require('lodash');
 
 // Load MongoDB utils
 const MongoDBAccess = require('../db/dbaccess');
@@ -39,28 +40,36 @@ router.get('/searchrecords/', auth, function (req, res) {
     setStyleFromId(req.query.Style, searchRequest);
 
     if ((typeof req.query.Artiste !== typeof undefined) && (req.query.Artiste != '')) {
-        searchRequest.Artist = { $regex: new RegExp('.*' + req.query.Artiste + '.*', 'i') };
+        var safeArtiste = _.escapeRegExp(req.query.Artiste);
+        searchRequest.Artist = { $regex: new RegExp('.*' + safeArtiste + '.*', 'i') };
     }
     if ((typeof req.query.Titre !== typeof undefined) && (req.query.Titre != '')) {
-        searchRequest.Title = { $regex: new RegExp('.*' + req.query.Titre + '.*', 'i') };
+        var safeTitre = _.escapeRegExp(req.query.Titre);
+        searchRequest.Title = { $regex: new RegExp('.*' + safeTitre + '.*', 'i') };
     }
     if ((typeof req.query.Format !== typeof undefined) && (req.query.Format != '')) {
-        searchRequest.Format = { $regex: new RegExp('.*' + req.query.Format + '.*', 'i') };
+        var safeFormat = _.escapeRegExp(req.query.Format);
+        searchRequest.Format = { $regex: new RegExp('.*' + safeFormat + '.*', 'i') };
     }
     if ((typeof req.query.Label !== typeof undefined) && (req.query.Label != '')) {
-        searchRequest.Label = { $regex: new RegExp('.*' + req.query.Label + '.*', 'i') };
+        var safeLabel = _.escapeRegExp(req.query.Label);
+        searchRequest.Label = { $regex: new RegExp('.*' + safeLabel + '.*', 'i') };
     }
     if ((typeof req.query.Country !== typeof undefined) && (req.query.Country != '')) {
-        searchRequest.Country = { $regex: new RegExp('.*' + req.query.Country + '.*', 'i') };
+        var safeCountry = _.escapeRegExp(req.query.Country);
+        searchRequest.Country = { $regex: new RegExp('.*' + safeCountry + '.*', 'i') };
     }
     if ((typeof req.query.Period !== typeof undefined) && (req.query.Period != '')) {
-        searchRequest.Period = { $regex: new RegExp('.*' + req.query.Period + '.*', 'i') };
+        var safePeriod = _.escapeRegExp(req.query.Period);
+        searchRequest.Period = { $regex: new RegExp('.*' + safePeriod + '.*', 'i') };
     }
     if ((typeof req.query.Reference !== typeof undefined) && (req.query.Reference != '')) {
-        searchRequest.Reference = { $regex: new RegExp('.*' + req.query.Reference + '.*', 'i') };
+        var safeReference = _.escapeRegExp(req.query.Reference);
+        searchRequest.Reference = { $regex: new RegExp('.*' + safeReference + '.*', 'i') };
     }
     if ((typeof req.query.StorageLocation !== typeof undefined) && (req.query.StorageLocation != '')) {
-        searchRequest.storageLocation = { $regex: new RegExp('.*' + req.query.StorageLocation + '.*', 'i') };
+        var safeStorageLocation = _.escapeRegExp(req.query.StorageLocation);
+        searchRequest.storageLocation = { $regex: new RegExp('.*' + safeStorageLocation + '.*', 'i') };
     }
     if ((typeof req.query.Year !== typeof undefined) && (req.query.Year != '')) {
         searchRequest.Year = Number(req.query.Year);
@@ -74,7 +83,8 @@ router.get('/searchrecords/', auth, function (req, res) {
             });
             searchRequest.$and = regexKeywords ;
         } else {
-            searchRequest.keywords = { $regex: new RegExp('.*' + reqKeywords[0] + '.*', 'i') };
+            var safeKeyword = _.escapeRegExp(reqKeywords[0]);
+            searchRequest.keywords = { $regex: new RegExp('.*' + safeKeyword + '.*', 'i') };
         }
     }
 
