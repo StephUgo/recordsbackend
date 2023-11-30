@@ -8,8 +8,17 @@ const MongoDBAccess = require('../db/dbaccess');
 const fs = require('fs');
 const auth = require('../auth/middleware/auth.service');
 
+// set up rate limiter: maximum of 100 requests per minute
+const RateLimit = require('express-rate-limit');
+const studioLimiter = RateLimit({
+  windowMs: 10 * 60 * 1000, // 10 minutes
+  max: 1000, // max requests per windowMs 
+  message: "Keep quiet, maybe get a life instead of spamming the api.",
+  headers: true
+});
+
 /* GET to Search Studios Service (NB: this route require authentication) */
-router.get('/searchstudios/', auth, function (req, res) {
+router.get('/searchstudios/', studioLimiter, auth, function (req, res) {
 
     console.log(req.query);
 
@@ -54,7 +63,7 @@ router.get('/searchstudios/', auth, function (req, res) {
 });
 
 /* POST to save a new studio.*/
-router.post('/savestudio',  auth, function (req, res) {
+router.post('/savestudio', studioLimiter, auth, function (req, res) {
 
     console.log('/savestudio');
     console.log(req.body);
@@ -86,7 +95,7 @@ router.post('/savestudio',  auth, function (req, res) {
 /*
  * DELETE a studio.
  */
-router.delete('/deletestudio/',  auth, function (req, res) {
+router.delete('/deletestudio/', studioLimiter, auth, function (req, res) {
 
     console.log(req.query);
 
@@ -107,7 +116,7 @@ router.delete('/deletestudio/',  auth, function (req, res) {
 });
 
 /* POST to update an existing studio */
-router.post('/updatestudio',  auth, function (req, res) {
+router.post('/updatestudio', studioLimiter, auth, function (req, res) {
 
     console.log('/updatestudio');
     console.log(req.body);
