@@ -75,15 +75,17 @@ router.get('/searchrecords/', auth, function (req, res) {
         searchRequest.Year = Number(req.query.Year);
     }
     if ((typeof req.query.Keywords === 'string' || req.query.Keywords instanceof String) && (req.query.Keywords != '')) {
-        var reqKeywords = req.query.Keywords.split(';');
+        let reqKeywords = req.query.Keywords.split(';');
+        let safeKeyword;
         if (reqKeywords.length > 1) {
-            var regexKeywords = [];
+            let regexKeywords = [];
             reqKeywords.forEach(element => {
-                regexKeywords.push({keywords: { $regex: new RegExp('.*' + element + '.*', 'i') }});
+                safeKeyword = _.escapeRegExp(element);
+                regexKeywords.push({keywords: { $regex: new RegExp('.*' + safeKeyword + '.*', 'i') }});
             });
             searchRequest.$and = regexKeywords ;
         } else {
-            var safeKeyword = _.escapeRegExp(reqKeywords[0]);
+            safeKeyword = _.escapeRegExp(reqKeywords[0]);
             searchRequest.keywords = { $regex: new RegExp('.*' + safeKeyword + '.*', 'i') };
         }
     }
