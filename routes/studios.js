@@ -1,6 +1,7 @@
-var express = require('express');
-var mongodb = require('mongodb');
-var router = express.Router();
+const express = require('express');
+const mongodb = require('mongodb');
+const router = express.Router();
+const _ = require('lodash');
 
 // Load MongoDB utils
 const MongoDBAccess = require('../db/dbaccess');
@@ -28,7 +29,8 @@ router.get('/searchstudios/', studioLimiter, auth, function (req, res) {
     var searchRequest = {};
 
     if ((typeof req.query.name !== typeof undefined) && (req.query.name != '')) {
-        searchRequest.name = { $regex: new RegExp('.*' + req.query.name + '.*', 'i') };
+        let safeName = _.escapeRegExp(req.query.name);
+        searchRequest.name = { $regex: new RegExp('.*' + safeName + '.*', 'i') };
     }
 
     var searchOptions = {};
