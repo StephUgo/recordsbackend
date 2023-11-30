@@ -5,7 +5,16 @@ const express = require("express");
 const router = express.Router();
 const auth = require('../../auth/middleware/auth.service');
 
-router.post("/register", async (req, res) => {
+// set up rate limiter: maximum of 10 requests per minute
+const RateLimit = require('express-rate-limit');
+const userLimiter = RateLimit({
+  windowMs: 10 * 60 * 1000, // 10 minutes
+  max: 100, // max requests per windowMs 
+  message: "Keep quiet, maybe get a life instead of spamming the api.",
+  headers: true
+});
+
+router.post("/register", userLimiter, async (req, res) => {
   // Validate the request body first
   const { error } = validate(req.body);
   if (error) {
@@ -34,7 +43,7 @@ router.post("/register", async (req, res) => {
   res.status(200).json({ msg: 'New user is registered.' })
 });
 
-router.post("/login", async (req, res) => {
+router.post("/login", userLimiter, async (req, res) => {
   // Validate the request body first
   const { error } = validate(req.body);
   if (error) {
@@ -91,7 +100,7 @@ var sha512 = function (password, salt) {
 };
 
 
-router.post("/updatepwd", auth, async (req, res) => {
+router.post("/updatepwd", userLimiter, auth, async (req, res) => {
   if (req.body.user === undefined) {
     return res.status(400).send("Undefined user.");
   }
