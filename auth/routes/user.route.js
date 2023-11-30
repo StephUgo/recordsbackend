@@ -4,6 +4,7 @@ const { User, validate } = require("../model/user.model");
 const express = require("express");
 const router = express.Router();
 const auth = require('../../auth/middleware/auth.service');
+const _ = require('lodash');
 
 // set up rate limiter: maximum of 10 requests per minute
 const RateLimit = require('express-rate-limit');
@@ -18,7 +19,8 @@ router.post("/register", userLimiter, async (req, res) => {
   // Validate the request body first
   const { error } = validate(req.body);
   if (error) {
-    return res.status(400).send(error.details[0].message);
+    let message = _.escape(error.details[0].message);
+    return res.status(400).send(message);
   }
 
   // Find an existing user
@@ -47,7 +49,8 @@ router.post("/login", userLimiter, async (req, res) => {
   // Validate the request body first
   const { error } = validate(req.body);
   if (error) {
-    return res.status(400).send(error.details[0].message);
+    let message = _.escape(error.details[0].message);
+    return res.status(400).send(message);
   }
 
   // Find an existing user
@@ -110,7 +113,8 @@ router.post("/updatepwd", userLimiter, auth, async (req, res) => {
   // Validate the user provided in the request body first
   const { error } = validate(req.body.user);
   if (error) {
-    return res.status(400).send(error.details[0].message);
+    let message = _.escape(error.details[0].message);
+    return res.status(400).send(message);
   }
 
   // Find an existing user
