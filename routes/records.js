@@ -9,8 +9,18 @@ const MongoDBAccess = require('../db/dbaccess');
 const fs = require('fs');
 const auth = require('../auth/middleware/auth.service');
 
+// set up rate limiter: maximum of 50 requests per minute
+const RateLimit = require('express-rate-limit');
+const recordsLimiter = RateLimit({
+  windowMs: 10 * 60 * 1000, // 10 minutes
+  max: 500, // max requests per windowMs 
+  message: "Keep quiet, maybe get a life instead of spamming the api.",
+  headers: true
+});
+
+
 /* GET to Search Records Default Service */
-router.get('/searchrecordsdefault/',  auth, function (req, res) {
+router.get('/searchrecordsdefault/', recordsLimiter, auth, function (req, res) {
 
     // Set our collection
     var collection = getCollection();
@@ -27,7 +37,7 @@ router.get('/searchrecordsdefault/',  auth, function (req, res) {
 });
 
 /* GET to Search Records Service (NB: this route require authentication) */
-router.get('/searchrecords/', auth, function (req, res) {
+router.get('/searchrecords/', recordsLimiter, auth, function (req, res) {
 
     console.log(req.query);
 
@@ -40,35 +50,43 @@ router.get('/searchrecords/', auth, function (req, res) {
     setStyleFromId(req.query.Style, searchRequest);
 
     if ((typeof req.query.Artiste !== typeof undefined) && (req.query.Artiste != '')) {
-        var safeArtiste = _.escapeRegExp(req.query.Artiste);
+        // @ts-ignore
+        let safeArtiste = _.escapeRegExp(req.query.Artiste);
         searchRequest.Artist = { $regex: new RegExp('.*' + safeArtiste + '.*', 'i') };
     }
     if ((typeof req.query.Titre !== typeof undefined) && (req.query.Titre != '')) {
-        var safeTitre = _.escapeRegExp(req.query.Titre);
+        // @ts-ignore
+        let safeTitre = _.escapeRegExp(req.query.Titre);
         searchRequest.Title = { $regex: new RegExp('.*' + safeTitre + '.*', 'i') };
     }
     if ((typeof req.query.Format !== typeof undefined) && (req.query.Format != '')) {
-        var safeFormat = _.escapeRegExp(req.query.Format);
+        // @ts-ignore
+        let safeFormat = _.escapeRegExp(req.query.Format);
         searchRequest.Format = { $regex: new RegExp('.*' + safeFormat + '.*', 'i') };
     }
     if ((typeof req.query.Label !== typeof undefined) && (req.query.Label != '')) {
-        var safeLabel = _.escapeRegExp(req.query.Label);
+        // @ts-ignore
+        let safeLabel = _.escapeRegExp(req.query.Label);
         searchRequest.Label = { $regex: new RegExp('.*' + safeLabel + '.*', 'i') };
     }
     if ((typeof req.query.Country !== typeof undefined) && (req.query.Country != '')) {
-        var safeCountry = _.escapeRegExp(req.query.Country);
+        // @ts-ignore
+        let safeCountry = _.escapeRegExp(req.query.Country);
         searchRequest.Country = { $regex: new RegExp('.*' + safeCountry + '.*', 'i') };
     }
     if ((typeof req.query.Period !== typeof undefined) && (req.query.Period != '')) {
-        var safePeriod = _.escapeRegExp(req.query.Period);
+        // @ts-ignore
+        let  safePeriod = _.escapeRegExp(req.query.Period);
         searchRequest.Period = { $regex: new RegExp('.*' + safePeriod + '.*', 'i') };
     }
     if ((typeof req.query.Reference !== typeof undefined) && (req.query.Reference != '')) {
-        var safeReference = _.escapeRegExp(req.query.Reference);
+        // @ts-ignorerecordsLimiter
+        let safeReference = _.escapeRegExp(req.query.Reference);
         searchRequest.Reference = { $regex: new RegExp('.*' + safeReference + '.*', 'i') };
     }
     if ((typeof req.query.StorageLocation !== typeof undefined) && (req.query.StorageLocation != '')) {
-        var safeStorageLocation = _.escapeRegExp(req.query.StorageLocation);
+        // @ts-ignore
+        let safeStorageLocation = _.escapeRegExp(req.query.StorageLocation);
         searchRequest.storageLocation = { $regex: new RegExp('.*' + safeStorageLocation + '.*', 'i') };
     }
     if ((typeof req.query.Year !== typeof undefined) && (req.query.Year != '')) {
@@ -122,7 +140,7 @@ router.get('/searchrecords/', auth, function (req, res) {
 });
 
 /* POST to save a new record.*/
-router.post('/saverecord',  auth, function (req, res) {
+router.post('/saverecord', recordsLimiter, auth, function (req, res) {
 
     console.log('/saverecord');
     console.log(req.body);
@@ -149,7 +167,7 @@ router.post('/saverecord',  auth, function (req, res) {
 /*
  * DELETE to deleterecord.
  */
-router.delete('/deleterecord/',  auth, function (req, res) {
+router.delete('/deleterecord/', recordsLimiter, auth, function (req, res) {
 
     console.log(req.query);
 
@@ -184,7 +202,7 @@ router.delete('/deleterecord/',  auth, function (req, res) {
 });
 
 /* POST to update an existing record */
-router.post('/updaterecord',  auth, function (req, res) {
+router.post('/updaterecord', recordsLimiter, auth, function (req, res) {
 
     console.log('/updaterecord');
     console.log(req.body);
@@ -239,7 +257,7 @@ function getCollection(styleId) {
 
 
 /* POST to update keywords on a set of existing record */
-router.post('/updatekeywords',  auth, function (req, res) {
+router.post('/updatekeywords', recordsLimiter, auth, function (req, res) {
 
     console.log('/updatekeywords');
     console.log(req.body);
@@ -275,7 +293,7 @@ function updateKeywordsForOneDocument(collection, bodyItem) {
 }
 
 /* POST to update a set of existing records */
-router.post('/updaterecords',  auth, function (req, res) {
+router.post('/updaterecords', recordsLimiter, auth, function (req, res) {
 
     console.log('/updaterecords');
     console.log(req.body);
